@@ -19,7 +19,7 @@ const Navbar = () => {
       py={4}
       justify="start"
       rounded="md"
-      shadow="base"
+      shadow="md"
       direction={{ base: 'column', md: 'row' }}
     >
       <Center mb={{ base: 4, md: 0 }}>
