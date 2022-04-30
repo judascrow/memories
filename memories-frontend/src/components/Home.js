@@ -9,7 +9,6 @@ const Home = () => {
       <GridItem
         colSpan={{ base: 12, md: 8, lg: 9 }}
         w="100%"
-        bg="blue.500"
         order={{ base: 2, md: 1 }}
       >
         <Grid

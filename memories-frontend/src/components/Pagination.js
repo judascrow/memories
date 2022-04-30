@@ -1,23 +1,37 @@
 import React from 'react';
-import { Center } from '@chakra-ui/react';
-import { ThemeProvider } from '@mui/material/styles';
-import { createTheme } from '@mui/material/styles';
-import Pagination from '@mui/material/Pagination';
+import { Box } from '@chakra-ui/react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Pagination, PaginationItem } from '@mui/material';
+
 const themeMUI = createTheme();
+
+const sx = {
+  ul: {
+    justifyContent: 'space-around',
+  },
+};
 
 const Paginate = ({ page }) => {
   return (
-    <Center p={3}>
+    <Box p={3}>
       <ThemeProvider theme={themeMUI}>
         <Pagination
-          count={5}
+          sx={sx}
+          count={3}
           // page={Number(page) || 1}
           size="small"
           color="primary"
           variant="outlined"
+          renderItem={item => (
+            <PaginationItem
+              {...item}
+              // component={Link}
+              to={`/posts?page=${item.page}`}
+            />
+          )}
         />
       </ThemeProvider>
-    </Center>
+    </Box>
   );
 };
 
