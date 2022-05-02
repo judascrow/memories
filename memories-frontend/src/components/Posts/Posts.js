@@ -20,26 +20,68 @@ const Posts = () => {
       >
         <Post />
       </GridItem>
-      <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-        POSTS
+      <GridItem
+        colSpan={1}
+        w="100%"
+        bg={useColorModeValue('white', 'gray.700')}
+        shadow="md"
+        rounded="md"
+      >
+        <Post />
       </GridItem>
-      <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-        POSTS
+      <GridItem
+        colSpan={1}
+        w="100%"
+        bg={useColorModeValue('white', 'gray.700')}
+        shadow="md"
+        rounded="md"
+      >
+        <Post />
       </GridItem>
-      <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-        POSTS
+      <GridItem
+        colSpan={1}
+        w="100%"
+        bg={useColorModeValue('white', 'gray.700')}
+        shadow="md"
+        rounded="md"
+      >
+        <Post />
       </GridItem>
-      <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-        POSTS
+      <GridItem
+        colSpan={1}
+        w="100%"
+        bg={useColorModeValue('white', 'gray.700')}
+        shadow="md"
+        rounded="md"
+      >
+        <Post />
       </GridItem>
-      <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-        POSTS
+      <GridItem
+        colSpan={1}
+        w="100%"
+        bg={useColorModeValue('white', 'gray.700')}
+        shadow="md"
+        rounded="md"
+      >
+        <Post />
       </GridItem>
-      <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-        POSTS
+      <GridItem
+        colSpan={1}
+        w="100%"
+        bg={useColorModeValue('white', 'gray.700')}
+        shadow="md"
+        rounded="md"
+      >
+        <Post />
       </GridItem>
-      <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-        POSTS
+      <GridItem
+        colSpan={1}
+        w="100%"
+        bg={useColorModeValue('white', 'gray.700')}
+        shadow="md"
+        rounded="md"
+      >
+        <Post />
       </GridItem>
     </Grid>
   );
