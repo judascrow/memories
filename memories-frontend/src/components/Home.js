@@ -2,6 +2,7 @@ import { Grid, GridItem, useColorModeValue } from '@chakra-ui/react';
 import Search from './Search';
 import Form from './Form';
 import Pagination from './Pagination';
+import Posts from './Posts/Posts';
 
 const Home = () => {
   return (
@@ -11,39 +12,7 @@ const Home = () => {
         w="100%"
         order={{ base: 2, md: 1 }}
       >
-        <Grid
-          templateColumns={{
-            base: 'repeat(1, 1fr)',
-            md: 'repeat(2, 1fr)',
-            lg: 'repeat(4, 1fr)',
-          }}
-          gap={4}
-        >
-          <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-            POSTS
-          </GridItem>
-          <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-            POSTS
-          </GridItem>
-          <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-            POSTS
-          </GridItem>
-          <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-            POSTS
-          </GridItem>
-          <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-            POSTS
-          </GridItem>
-          <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-            POSTS
-          </GridItem>
-          <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-            POSTS
-          </GridItem>
-          <GridItem colSpan={1} w="100%" p={4} bg="red.500">
-            POSTS
-          </GridItem>
-        </Grid>
+        <Posts />
       </GridItem>
       <GridItem
         colSpan={{ base: 12, md: 4, lg: 3 }}
