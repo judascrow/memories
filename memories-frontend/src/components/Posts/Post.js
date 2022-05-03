@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Box,
   Center,
@@ -10,53 +11,77 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { BiLike } from 'react-icons/bi';
+import moment from 'moment';
 
-const Post = () => {
-  const detailPost =
-    'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.';
+const Post = ({ post, setCurrentId }) => {
+  const user = JSON.parse(localStorage.getItem('profile'));
+  const [likes, setLikes] = useState(post?.likes);
+
+  const userId = user?.result.googleId || user?.result?._id;
+
+  const Likes = () => {
+    if (likes.length > 0) {
+      return likes.find(like => like === userId) ? (
+        <>
+          <BiLike fontSize="small" />
+          &nbsp;
+          {likes.length > 2
+            ? `You and ${likes.length - 1} others`
+            : `${likes.length} like${likes.length > 1 ? 's' : ''}`}
+        </>
+      ) : (
+        <>
+          <BiLike fontSize="small" />
+          &nbsp;{likes.length} {likes.length === 1 ? 'Like' : 'Likes'}
+        </>
+      );
+    }
+
+    return (
+      <>
+        <BiLike fontSize="small" />
+        &nbsp;Like
+      </>
+    );
+  };
+
   return (
     <Center>
       <Box
-        maxW={'445px'}
-        w={'full'}
+        maxW="445px"
+        w="'full"
         bg={useColorModeValue('white', 'gray.900')}
-        boxShadow={'2xl'}
-        rounded={'md'}
+        boxShadow="2xl"
+        rounded="md"
         // p={2}
-        overflow={'hidden'}
+        overflow="hidden"
       >
         <Flex
-          bg={'gray.100'}
+          bg="gray.100"
           h={{ base: '200px', md: '120px', lg: '120px' }}
-          position={'relative'}
+          position="relative"
           bgPosition="center"
-          bgSize={'cover'}
-          //   bgBlendMode="darken"
-          bgImage={
-            'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-          }
+          bgSize="cover"
+          bgImage={post.selectedFile}
+          borderTopRadius="md"
           direction="column"
         >
           <Box p={2}>
             <Text color="white" fontSize="sm">
-              Thongchai
+              {post.name}
             </Text>
             <Text color="white" fontSize="xs">
-              3 hours ago
+              {moment(post.createdAt).fromNow()}
             </Text>
           </Box>
         </Flex>
         <Box p={3}>
           <Box mb={3}>
-            <Tag size="sm" mr={1}>
-              bangkok
-            </Tag>
-            <Tag size="sm" mr={1}>
-              bangkok
-            </Tag>
-            <Tag size="sm" mr={1}>
-              bangkok
-            </Tag>
+            {post.tags.map((tag, index) => (
+              <Tag key={index} size="sm" mr={1}>
+                {tag}
+              </Tag>
+            ))}
           </Box>
           <Stack>
             <Heading
@@ -64,16 +89,15 @@ const Post = () => {
               fontSize={'lg'}
               fontFamily={'body'}
             >
-              Thailand
+              {post.title}
             </Heading>
             <Text color={'gray.500'} fontSize="xs">
-              {detailPost.split(' ').splice(0, 20).join(' ')}...
+              {post.message.split(' ').splice(0, 20).join(' ')}...
             </Text>
           </Stack>
-          <Stack mt={3} direction={'row'} spacing={4} align={'center'}>
-            <Button size="xs" leftIcon={<BiLike />}>
-              Like
-            </Button>
+
+          <Stack mt={3} direction={'row'} spacing={4}>
+            <Button size="xs" color="blue.600" leftIcon={<Likes />} />
           </Stack>
         </Box>
       </Box>
