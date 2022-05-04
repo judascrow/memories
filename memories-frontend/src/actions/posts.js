@@ -2,14 +2,15 @@ import {
   START_LOADING,
   END_LOADING,
   FETCH_ALL,
-  FETCH_POST,
   FETCH_BY_SEARCH,
-  CREATE,
-  UPDATE,
-  DELETE,
-  LIKE,
-  COMMENT,
-  FETCH_BY_CREATOR,
+  // FETCH_POST,
+  // CREATE,
+  // UPDATE,
+  // DELETE,
+  // LIKE,
+  // COMMENT,
+  // FETCH_BY_CREATOR,
+  ERROR_NOT_FOUND,
 } from '../constants/actionTypes';
 import * as api from '../api/index.js';
 
@@ -25,12 +26,12 @@ import * as api from '../api/index.js';
 //   }
 // };
 
-export const getPosts = page => async dispatch => {
+export const getPosts = (page, searchQuery) => async dispatch => {
   try {
     dispatch({ type: START_LOADING });
     const {
       data: { data, currentPage, numberOfPages },
-    } = await api.fetchPosts(page);
+    } = await api.fetchPosts(page, searchQuery);
 
     dispatch({
       type: FETCH_ALL,
@@ -39,6 +40,8 @@ export const getPosts = page => async dispatch => {
     dispatch({ type: END_LOADING });
   } catch (error) {
     console.log(error);
+    dispatch({ type: ERROR_NOT_FOUND });
+    dispatch({ type: END_LOADING });
   }
 };
 
@@ -58,10 +61,13 @@ export const getPostsBySearch = searchQuery => async dispatch => {
   try {
     dispatch({ type: START_LOADING });
     const {
-      data: { data },
+      data: { data, currentPage, numberOfPages },
     } = await api.fetchPostsBySearch(searchQuery);
 
-    dispatch({ type: FETCH_BY_SEARCH, payload: { data } });
+    dispatch({
+      type: FETCH_BY_SEARCH,
+      payload: { data, currentPage, numberOfPages },
+    });
     dispatch({ type: END_LOADING });
   } catch (error) {
     console.log(error);

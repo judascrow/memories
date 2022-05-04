@@ -12,3 +12,5 @@ export const FETCH_BY_CREATOR = 'FETCH_BY_CREATOR';
 
 export const AUTH = 'AUTH';
 export const LOGOUT = 'LOGOUT';
+
+export const ERROR_NOT_FOUND = 'ERROR_NOT_FOUND';

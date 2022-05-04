@@ -12,7 +12,15 @@ const API = axios.create({
 //   return req;
 // });
 
-export const fetchPosts = page => API.get(`/posts?page=${page}&limit=8`);
+export const fetchPosts = (page, searchQuery) => {
+  return API.get(
+    `/posts?search=${
+      searchQuery?.search ? searchQuery.search : ''
+    }&page=${page}&limit=8`
+  );
+};
+
+// export const fetchPosts = page => API.get(`/posts?page=${page}&limit=8`);
 
 // export const fetchPost = (id) => API.get(`/posts/${id}`);
 // export const fetchPostsByCreator = (name) => API.get(`/posts/creator?name=${name}`);
@@ -22,7 +30,7 @@ export const fetchPostsBySearch = searchQuery => {
       `/posts?search=${searchQuery.search}&tags=${searchQuery.tags}`
     );
   } else {
-    return API.get(`/posts?search=${searchQuery.search}`);
+    return API.get(`/posts?search=${searchQuery.search}&page=1&limit=8`);
   }
 };
 

@@ -14,14 +14,14 @@ const sx = {
   },
 };
 
-const Paginate = ({ page }) => {
+const Paginate = ({ page, searchQuery }) => {
   const { numberOfPages } = useSelector(state => state.posts);
   const dispatch = useDispatch();
-
   useEffect(() => {
     if (page) {
-      dispatch(getPosts(page));
+      dispatch(getPosts(page, searchQuery));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, page]);
 
   return (
@@ -38,7 +38,9 @@ const Paginate = ({ page }) => {
             <PaginationItem
               {...item}
               component={Link}
-              to={`/posts?page=${item.page}`}
+              to={`/posts?search=${
+                searchQuery?.search ? searchQuery.search : ''
+              }&page=${item.page}`}
             />
           )}
         />

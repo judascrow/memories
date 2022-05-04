@@ -15,7 +15,8 @@ import moment from 'moment';
 
 const Post = ({ post, setCurrentId }) => {
   const user = JSON.parse(localStorage.getItem('profile'));
-  const [likes, setLikes] = useState(post?.likes);
+  // const [likes, setLikes] = useState(post?.likes);
+  const [likes] = useState(post?.likes);
 
   const userId = user?.result.googleId || user?.result?._id;
 
@@ -57,8 +58,8 @@ const Post = ({ post, setCurrentId }) => {
         overflow="hidden"
       >
         <Flex
-          bg="gray.100"
-          h={{ base: '200px', md: '120px', lg: '120px' }}
+          bg="gray.500"
+          h={{ base: '250px', md: '180px', lg: '180px' }}
           position="relative"
           bgPosition="center"
           bgSize="cover"

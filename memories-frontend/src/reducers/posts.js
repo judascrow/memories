@@ -8,6 +8,7 @@ import {
   DELETE,
   LIKE,
   COMMENT,
+  ERROR_NOT_FOUND,
 } from '../constants/actionTypes';
 
 // eslint-disable-next-line
@@ -26,7 +27,12 @@ export default (state = { isLoading: true, posts: [] }, action) => {
       };
     case FETCH_BY_SEARCH:
     case FETCH_BY_CREATOR:
-      return { ...state, posts: action.payload.data };
+      return {
+        ...state,
+        posts: action.payload.data,
+        currentPage: action.payload.currentPage,
+        numberOfPages: Math.ceil(action.payload.numberOfPages / 8),
+      };
     case FETCH_POST:
       return { ...state, post: action.payload.post };
     case LIKE:
@@ -59,6 +65,13 @@ export default (state = { isLoading: true, posts: [] }, action) => {
       return {
         ...state,
         posts: state.posts.filter(post => post._id !== action.payload),
+      };
+    case ERROR_NOT_FOUND:
+      return {
+        ...state,
+        posts: [],
+        currentPage: 1,
+        numberOfPages: 1,
       };
     default:
       return state;

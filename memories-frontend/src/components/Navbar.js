@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   Flex,
   Center,
@@ -8,9 +9,40 @@ import {
   Spacer,
   Avatar,
 } from '@chakra-ui/react';
-import { FaCameraRetro } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import decode from 'jwt-decode';
+import { FaCameraRetro, FaLock } from 'react-icons/fa';
+
+import * as actionType from '../constants/actionTypes';
 
 const Navbar = () => {
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const logout = () => {
+    dispatch({ type: actionType.LOGOUT });
+
+    navigate('/auth');
+
+    setUser(null);
+  };
+
+  useEffect(() => {
+    const token = user?.token;
+
+    if (token) {
+      const decodedToken = decode(token);
+
+      if (decodedToken.exp * 1000 < new Date().getTime()) logout();
+    }
+
+    setUser(JSON.parse(localStorage.getItem('profile')));
+    // eslint-disable-next-line
+  }, [location]);
+
   return (
     <Flex
       bg={useColorModeValue('white', 'gray.700')}
@@ -22,23 +54,40 @@ const Navbar = () => {
       shadow="md"
       direction={{ base: 'column', md: 'row' }}
     >
-      <Center mb={{ base: 4, md: 0 }}>
-        <Heading mr={2} color="gray.600">
-          Memories
-        </Heading>
-        <Icon as={FaCameraRetro} w={8} h={8} color="blue.600" />
-      </Center>
+      <Link to="/">
+        <Center mb={{ base: 4, md: 0 }}>
+          <Heading component={Link} to="/" mr={2} color="gray.600">
+            Memories
+          </Heading>
+          <Icon as={FaCameraRetro} w={8} h={8} color="blue.600" />
+        </Center>
+      </Link>
       <Spacer />
-      <Center>
-        <Avatar size="sm" bg="purple.500" mr={5} />
-        <Heading fontSize="sm" color="gray.600" mr={10}>
-          Thongchai Somtua
-        </Heading>
-        <Spacer />
-        <Button colorScheme="pink" size="sm">
-          LOGOUT
-        </Button>
-      </Center>
+      {user?.result ? (
+        <Center>
+          <Avatar size="sm" bg="purple.500" mr={5} />
+          <Heading fontSize="sm" color="gray.600" mr={10}>
+            Thongchai Somtua
+          </Heading>
+          <Spacer />
+          <Button colorScheme="pink" size="sm" onClick={logout}>
+            LOGOUT
+          </Button>
+        </Center>
+      ) : (
+        <Center>
+          <Button
+            as={Link}
+            to="/auth"
+            size="sm"
+            colorScheme="pink"
+            w="100%"
+            leftIcon={<FaLock />}
+          >
+            Sign In
+          </Button>
+        </Center>
+      )}
     </Flex>
   );
 };
