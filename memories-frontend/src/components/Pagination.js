@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
-import { Box } from '@chakra-ui/react';
+import { Box, useColorMode } from '@chakra-ui/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Pagination, PaginationItem } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getPosts } from '../actions/posts';
-
-const themeMUI = createTheme();
 
 const sx = {
   ul: {
@@ -15,6 +13,13 @@ const sx = {
 };
 
 const Paginate = ({ page, searchQuery }) => {
+  const { colorMode } = useColorMode();
+  const themeMUI = createTheme({
+    palette: {
+      mode: colorMode,
+    },
+  });
+
   const { numberOfPages } = useSelector(state => state.posts);
   const dispatch = useDispatch();
   useEffect(() => {

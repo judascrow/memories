@@ -1,13 +1,21 @@
-import { Box, Heading, Input, Textarea, Button } from '@chakra-ui/react';
+import {
+  Box,
+  Heading,
+  Input,
+  Textarea,
+  Button,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { FaPlus } from 'react-icons/fa';
 
 const Form = ({ currentId, setCurrentId }) => {
+  const colorText = useColorModeValue('gray.500', 'gray.300');
   const user = JSON.parse(localStorage.getItem('profile'));
 
   if (!user?.result?.name) {
     return (
       <Box p={5}>
-        <Heading size="sm" align="center" color="gray.500">
+        <Heading size="sm" align="center" color={colorText}>
           Please Sign In to create your own memories and like other's memories.
         </Heading>
       </Box>

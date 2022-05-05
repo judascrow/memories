@@ -31,19 +31,13 @@ const Home = () => {
 
   const [search, setSearch] = useState('');
 
-  // const [tags, setTags] = useState([]);
-  const [tags] = useState([]);
   const navigate = useNavigate();
 
   const searchPost = () => {
-    if (search.trim() || tags) {
+    if (search.trim()) {
       dispatch(getPosts(page, { search }));
 
-      if (tags.length === 0) {
-        navigate(`/posts?search=${search}&page=1`);
-      } else {
-        navigate(`/posts?search=${search}&tags=${tags.join(',')}`);
-      }
+      navigate(`/posts?search=${search}&page=1`);
     } else {
       navigate('/');
     }
@@ -80,19 +74,19 @@ const Home = () => {
               p={3}
             >
               <Input
-                size="sm"
+                // size="sm"
                 placeholder="Search Memories"
                 mb={2}
                 onKeyDown={handleKeyPress}
                 defaultValue={search}
                 onChange={e => setSearch(e.target.value)}
               />
-              <Input
+              {/* <Input
                 size="sm"
                 placeholder="Search Tags"
                 mb={2}
                 defaultValue={tags}
-              />
+              /> */}
               <Button
                 size="sm"
                 colorScheme="facebook"
@@ -117,7 +111,7 @@ const Home = () => {
               shadow="md"
               rounded="md"
             >
-              {!searchQuery && !tags.length && (
+              {!searchQuery && (
                 <Pagination page={page} searchQuery={{ search }} />
               )}
             </GridItem>

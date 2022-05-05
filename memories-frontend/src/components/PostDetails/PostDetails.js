@@ -22,8 +22,10 @@ import { getPost } from '../../actions/posts';
 import CommentSection from './CommentSection';
 
 const Post = () => {
-  const [isLargerThan1280] = useMediaQuery('(min-width: 960px)');
   const bg = useColorModeValue('white', 'gray.700');
+  const colorText = useColorModeValue('gray.600', 'white');
+  const colorTag = useColorModeValue('gray.500', 'white');
+  const [isLargerThan1280] = useMediaQuery('(min-width: 960px)');
   const { post, isLoading } = useSelector(state => state.posts);
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -56,12 +58,12 @@ const Post = () => {
         mb={5}
       >
         <Flex direction={'column'} flex={1} p={5} order={{ base: 2, md: 1 }}>
-          <Heading size="lg" color="gray.600" mb={2}>
+          <Heading size="lg" color={colorText} mb={2}>
             {post.title}
           </Heading>
           <Box mb={5}>
             {post.tags.map((tag, index) => (
-              <Tag key={index} size="sm" mr={1} color={'gray.500'}>
+              <Tag key={index} size="sm" mr={1} color={colorTag}>
                 {tag}
               </Tag>
             ))}
@@ -70,12 +72,12 @@ const Post = () => {
             <Text fontSize="sm">{post.message}</Text>
           </Box>
           <Box mb={2}>
-            <Text color={'gray.600'} fontSize="sm">
+            <Text color={colorText} fontSize="sm">
               Created by: {post.name}
             </Text>
           </Box>
           <Box mb={3}>
-            <Text color={'gray.600'} fontSize="xs">
+            <Text color={colorText} fontSize="xs">
               {moment(post.createdAt).fromNow()}
             </Text>
           </Box>
@@ -87,11 +89,21 @@ const Post = () => {
           {isLargerThan1280 ? (
             <>
               <Spacer />
-              <Image src={post.selectedFile} objectFit="cover" rounded="md" />
+              <Image
+                src={post.selectedFile}
+                objectFit="cover"
+                rounded="md"
+                fallbackSrc="https://via.placeholder.com/450"
+              />
             </>
           ) : (
             <Container centerContent px={0}>
-              <Image src={post.selectedFile} objectFit="cover" rounded="md" />
+              <Image
+                src={post.selectedFile}
+                objectFit="cover"
+                rounded="md"
+                fallbackSrc="https://via.placeholder.com/450"
+              />
             </Container>
           )}
         </Flex>

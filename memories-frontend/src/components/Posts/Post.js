@@ -67,7 +67,7 @@ const Post = ({ post, setCurrentId }) => {
         <Flex
           as="button"
           w="100%"
-          bg="gray.500"
+          bg={useColorModeValue('gray.500', 'gray.600')}
           h={{ base: '250px', md: '180px', lg: '180px' }}
           position="relative"
           bgPosition="center"
@@ -78,7 +78,7 @@ const Post = ({ post, setCurrentId }) => {
           onClick={openPost}
         >
           <Box p={2}>
-            <Text color="white" fontSize="sm">
+            <Text color="white" fontSize="sm" textAlign={'start'}>
               {post.name}
             </Text>
             <Text color="white" fontSize="xs">
@@ -102,13 +102,17 @@ const Post = ({ post, setCurrentId }) => {
             >
               {post.title}
             </Heading>
-            <Text color={'gray.500'} fontSize="xs">
+            <Text color={useColorModeValue('gray.500', 'white')} fontSize="xs">
               {post.message.split(' ').splice(0, 20).join(' ')}...
             </Text>
           </Stack>
 
           <Stack mt={3} direction={'row'} spacing={4}>
-            <Button size="xs" color="blue.600" leftIcon={<Likes />} />
+            <Button
+              size="xs"
+              color={useColorModeValue('blue.600', 'white')}
+              leftIcon={<Likes />}
+            />
           </Stack>
         </Box>
       </Box>

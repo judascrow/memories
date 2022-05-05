@@ -8,6 +8,7 @@ import {
   Icon,
   Spacer,
   Avatar,
+  Show,
 } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -15,6 +16,7 @@ import decode from 'jwt-decode';
 import { FaCameraRetro, FaLock } from 'react-icons/fa';
 
 import * as actionType from '../constants/actionTypes';
+import { ColorModeSwitcher } from '../ColorModeSwitcher';
 
 const Navbar = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('profile')));
@@ -54,14 +56,23 @@ const Navbar = () => {
       shadow="md"
       direction={{ base: 'column', md: 'row' }}
     >
-      <Link to="/">
-        <Center mb={{ base: 4, md: 0 }}>
-          <Heading component={Link} to="/" mr={2} color="gray.600">
+      <Center mb={{ base: 4, md: 0 }}>
+        <Center as={Link} to="/">
+          <Heading mr={2} color={useColorModeValue('gray.600', 'white')}>
             Memories
           </Heading>
-          <Icon as={FaCameraRetro} w={8} h={8} color="blue.600" />
+          <Icon
+            as={FaCameraRetro}
+            w={8}
+            h={8}
+            color={useColorModeValue('blue.600', 'white')}
+          />
         </Center>
-      </Link>
+        <Show below="md">
+          <ColorModeSwitcher />
+        </Show>
+      </Center>
+
       <Spacer />
       {user?.result ? (
         <Center>
@@ -88,6 +99,9 @@ const Navbar = () => {
           </Button>
         </Center>
       )}
+      <Show above="md">
+        <ColorModeSwitcher />
+      </Show>
     </Flex>
   );
 };

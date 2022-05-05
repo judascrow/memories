@@ -45,6 +45,7 @@ export const Auth = () => {
         bg={useColorModeValue('white', 'gray.700')}
         shadow="md"
         rounded="md"
+        mb={5}
       >
         <Stack spacing="8">
           <Stack spacing="2">
@@ -65,17 +66,12 @@ export const Auth = () => {
                       <Input
                         name="firstName"
                         handleChange={handleChange}
-                        size="sm"
                         autoFocus
                       />
                     </FormControl>
                     <FormControl>
                       <FormLabel htmlFor="lastName">Last Name</FormLabel>
-                      <Input
-                        name="lastName"
-                        size="sm"
-                        handleChange={handleChange}
-                      />
+                      <Input name="lastName" handleChange={handleChange} />
                     </FormControl>
                   </>
                 )}
@@ -85,7 +81,6 @@ export const Auth = () => {
                     id="email"
                     name="email"
                     type="email"
-                    size="sm"
                     handleChange={handleChange}
                   />
                 </FormControl>
@@ -107,7 +102,6 @@ export const Auth = () => {
                   <Button
                     variant="link"
                     colorScheme="blue"
-                    size="sm"
                     onClick={switchMode}
                   >
                     {isSignup
