@@ -39,7 +39,7 @@ export const Auth = () => {
   return (
     <ScaleFade in>
       <Container
-        mt={8}
+        mt={5}
         maxW="md"
         px={3}
         bg={useColorModeValue('white', 'gray.700')}
@@ -48,7 +48,7 @@ export const Auth = () => {
       >
         <Stack spacing="8">
           <Stack spacing="2">
-            <Stack pt={10} align="center">
+            <Stack pt={5} align="center">
               <Icon as={FaUserLock} w={12} h={12} color="pink.500" />
             </Stack>
             <Stack textAlign="center">
@@ -65,12 +65,17 @@ export const Auth = () => {
                       <Input
                         name="firstName"
                         handleChange={handleChange}
+                        size="sm"
                         autoFocus
                       />
                     </FormControl>
                     <FormControl>
                       <FormLabel htmlFor="lastName">Last Name</FormLabel>
-                      <Input name="lastName" handleChange={handleChange} />
+                      <Input
+                        name="lastName"
+                        size="sm"
+                        handleChange={handleChange}
+                      />
                     </FormControl>
                   </>
                 )}
@@ -80,6 +85,7 @@ export const Auth = () => {
                     id="email"
                     name="email"
                     type="email"
+                    size="sm"
                     handleChange={handleChange}
                   />
                 </FormControl>

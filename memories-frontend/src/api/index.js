@@ -22,7 +22,7 @@ export const fetchPosts = (page, searchQuery) => {
 
 // export const fetchPosts = page => API.get(`/posts?page=${page}&limit=8`);
 
-// export const fetchPost = (id) => API.get(`/posts/${id}`);
+export const fetchPost = id => API.get(`/posts/${id}`);
 // export const fetchPostsByCreator = (name) => API.get(`/posts/creator?name=${name}`);
 export const fetchPostsBySearch = searchQuery => {
   if (searchQuery.tags !== '') {

@@ -4,6 +4,7 @@ import theme from './theme';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Auth from './components/Auth/Auth';
+import PostDetails from './components/PostDetails/PostDetails';
 
 function App() {
   const user = JSON.parse(localStorage.getItem('profile'));
@@ -16,6 +17,7 @@ function App() {
           <Route index element={<Navigate to="/posts" />} />
           <Route path="/posts" index element={<Home />} />
           {/* <Route path="/posts/search" index element={<Home />} /> */}
+          <Route path="/posts/:id" index element={<PostDetails />} />
           <Route
             path="/auth"
             index

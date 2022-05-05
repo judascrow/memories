@@ -12,9 +12,12 @@ import {
 } from '@chakra-ui/react';
 import { BiLike } from 'react-icons/bi';
 import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 const Post = ({ post, setCurrentId }) => {
   const user = JSON.parse(localStorage.getItem('profile'));
+
+  const navigate = useNavigate();
   // const [likes, setLikes] = useState(post?.likes);
   const [likes] = useState(post?.likes);
 
@@ -46,6 +49,10 @@ const Post = ({ post, setCurrentId }) => {
     );
   };
 
+  const openPost = e => {
+    navigate(`/posts/${post.id}`);
+  };
+
   return (
     <Center>
       <Box
@@ -58,6 +65,8 @@ const Post = ({ post, setCurrentId }) => {
         overflow="hidden"
       >
         <Flex
+          as="button"
+          w="100%"
           bg="gray.500"
           h={{ base: '250px', md: '180px', lg: '180px' }}
           position="relative"
@@ -66,6 +75,7 @@ const Post = ({ post, setCurrentId }) => {
           bgImage={post.selectedFile}
           borderTopRadius="md"
           direction="column"
+          onClick={openPost}
         >
           <Box p={2}>
             <Text color="white" fontSize="sm">
