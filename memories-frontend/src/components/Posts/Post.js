@@ -11,7 +11,7 @@ import {
   Button,
   Divider,
 } from '@chakra-ui/react';
-import { BiLike } from 'react-icons/bi';
+import { AiOutlineLike, AiFillLike } from 'react-icons/ai';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 
@@ -28,7 +28,7 @@ const Post = ({ post, setCurrentId }) => {
     if (likes.length > 0) {
       return likes.find(like => like === userId) ? (
         <>
-          <BiLike fontSize="small" />
+          <AiFillLike fontSize="small" />
           &nbsp;
           {likes.length > 2
             ? `You and ${likes.length - 1} others`
@@ -36,7 +36,7 @@ const Post = ({ post, setCurrentId }) => {
         </>
       ) : (
         <>
-          <BiLike fontSize="small" />
+          <AiOutlineLike fontSize="small" />
           &nbsp;{likes.length} {likes.length === 1 ? 'Like' : 'Likes'}
         </>
       );
@@ -44,7 +44,7 @@ const Post = ({ post, setCurrentId }) => {
 
     return (
       <>
-        <BiLike fontSize="small" />
+        <AiOutlineLike fontSize="small" />
         &nbsp;Like
       </>
     );

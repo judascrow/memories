@@ -21,7 +21,9 @@ function App() {
           <Route
             path="/auth"
             index
-            element={!user ? <Auth /> : <Navigate to="/posts" />}
+            element={
+              !user || user === null ? <Auth /> : <Navigate to="/posts" />
+            }
           />
         </Routes>
       </BrowserRouter>
