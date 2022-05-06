@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { FaUserLock } from 'react-icons/fa';
+
 import { PasswordField } from './PasswordField';
 
 const initialState = {
@@ -57,60 +58,62 @@ export const Auth = () => {
             </Stack>
           </Stack>
           <Box pb={5} px={3}>
-            <Stack spacing="6">
-              <Stack spacing="5">
-                {isSignup && (
-                  <>
-                    <FormControl>
-                      <FormLabel htmlFor="firstName">First Name</FormLabel>
-                      <Input
-                        name="firstName"
-                        handleChange={handleChange}
-                        autoFocus
-                      />
-                    </FormControl>
-                    <FormControl>
-                      <FormLabel htmlFor="lastName">Last Name</FormLabel>
-                      <Input name="lastName" handleChange={handleChange} />
-                    </FormControl>
-                  </>
-                )}
-                <FormControl>
-                  <FormLabel htmlFor="email">Email</FormLabel>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    handleChange={handleChange}
-                  />
-                </FormControl>
-                <PasswordField inputName="password" labelName="Password" />
-                {isSignup && (
-                  <PasswordField
-                    inputName="confirmPassword"
-                    labelName="Repeat Password"
-                    handleChange={handleChange}
-                  />
-                )}
-              </Stack>
-
+            <form>
               <Stack spacing="6">
-                <Button colorScheme="facebook">
-                  {isSignup ? 'Sign Up' : 'Sign In'}
-                </Button>
-                <HStack justify="end">
-                  <Button
-                    variant="link"
-                    colorScheme="blue"
-                    onClick={switchMode}
-                  >
-                    {isSignup
-                      ? 'Already have an account? Sign in'
-                      : "Don't have an account? Sign Up"}
+                <Stack spacing="5">
+                  {isSignup && (
+                    <>
+                      <FormControl>
+                        <FormLabel htmlFor="firstName">First Name</FormLabel>
+                        <Input
+                          name="firstName"
+                          handleChange={handleChange}
+                          autoFocus
+                        />
+                      </FormControl>
+                      <FormControl>
+                        <FormLabel htmlFor="lastName">Last Name</FormLabel>
+                        <Input name="lastName" handleChange={handleChange} />
+                      </FormControl>
+                    </>
+                  )}
+                  <FormControl>
+                    <FormLabel htmlFor="email">Email</FormLabel>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      handleChange={handleChange}
+                    />
+                  </FormControl>
+                  <PasswordField inputName="password" labelName="Password" />
+                  {isSignup && (
+                    <PasswordField
+                      inputName="confirmPassword"
+                      labelName="Repeat Password"
+                      handleChange={handleChange}
+                    />
+                  )}
+                </Stack>
+
+                <Stack spacing="6">
+                  <Button colorScheme="facebook">
+                    {isSignup ? 'Sign Up' : 'Sign In'}
                   </Button>
-                </HStack>
+                  <HStack justify="end">
+                    <Button
+                      variant="link"
+                      colorScheme="blue"
+                      onClick={switchMode}
+                    >
+                      {isSignup
+                        ? 'Already have an account? Sign in'
+                        : "Don't have an account? Sign Up"}
+                    </Button>
+                  </HStack>
+                </Stack>
               </Stack>
-            </Stack>
+            </form>
           </Box>
         </Stack>
       </Container>

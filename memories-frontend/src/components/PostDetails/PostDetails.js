@@ -13,7 +13,9 @@ import {
   Flex,
   useMediaQuery,
   Container,
+  Button,
 } from '@chakra-ui/react';
+import { BiLike } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { useParams } from 'react-router-dom';
@@ -25,7 +27,9 @@ const Post = () => {
   const bg = useColorModeValue('white', 'gray.700');
   const colorText = useColorModeValue('gray.600', 'white');
   const colorTag = useColorModeValue('gray.500', 'white');
+  const colorLike = useColorModeValue('blue.600', 'white');
   const [isLargerThan1280] = useMediaQuery('(min-width: 960px)');
+  const user = JSON.parse(localStorage.getItem('profile'));
   const { post, isLoading } = useSelector(state => state.posts);
   const dispatch = useDispatch();
   const { id } = useParams();
@@ -36,6 +40,35 @@ const Post = () => {
   }, [id]);
 
   if (!post) return null;
+
+  const userId = user?.result?._id;
+
+  const Likes = () => {
+    if (post?.likes.length > 0) {
+      return post?.likes.find(like => like === userId) ? (
+        <>
+          <BiLike fontSize="small" />
+          &nbsp;
+          {post?.likes.length > 2
+            ? `You and ${post?.likes.length - 1} others`
+            : `${post?.likes.length} like${post?.likes.length > 1 ? 's' : ''}`}
+        </>
+      ) : (
+        <>
+          <BiLike fontSize="small" />
+          &nbsp;{post?.likes.length}{' '}
+          {post?.likes.length === 1 ? 'Like' : 'Likes'}
+        </>
+      );
+    }
+
+    return (
+      <>
+        <BiLike fontSize="small" />
+        &nbsp;Like
+      </>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -71,6 +104,7 @@ const Post = () => {
           <Box mb={10}>
             <Text fontSize="sm">{post.message}</Text>
           </Box>
+
           <Box mb={2}>
             <Text color={colorText} fontSize="sm">
               Created by: {post.name}
@@ -80,6 +114,9 @@ const Post = () => {
             <Text color={colorText} fontSize="xs">
               {moment(post.createdAt).fromNow()}
             </Text>
+          </Box>
+          <Box mb={3}>
+            <Button size="xs" color={colorLike} leftIcon={<Likes />} />{' '}
           </Box>
           <Divider mb={5} />
           <CommentSection post={post} />

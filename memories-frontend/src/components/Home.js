@@ -56,6 +56,7 @@ const Home = () => {
           colSpan={{ base: 12, md: 8, lg: 9 }}
           w="100%"
           order={{ base: 2, md: 1 }}
+          mb={5}
         >
           <Posts setCurrentId={setCurrentId} />
         </GridItem>

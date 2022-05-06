@@ -1,8 +1,8 @@
 import {
   Grid,
-  GridItem,
   useColorModeValue,
   CircularProgress,
+  Flex,
 } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 
@@ -27,16 +27,18 @@ const Posts = ({ setCurrentId }) => {
       gap={4}
     >
       {posts?.map(post => (
-        <GridItem
+        <Flex
           key={post.id}
           colSpan={1}
           w="100%"
           bg={bgColor}
           shadow="md"
           rounded="md"
+          direction={'column'}
+          justify="space-between"
         >
           <Post post={post} setCurrentId={setCurrentId} />
-        </GridItem>
+        </Flex>
       ))}
     </Grid>
   );
