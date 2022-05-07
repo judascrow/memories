@@ -72,7 +72,7 @@ export const Auth = () => {
     <ScaleFade in>
       <Container
         mt={5}
-        maxW="md"
+        maxW={{ base: 'xs', sm: 'md' }}
         px={3}
         bg={useColorModeValue('white', 'gray.700')}
         shadow="md"
