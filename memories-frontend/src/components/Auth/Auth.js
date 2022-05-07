@@ -36,6 +36,7 @@ export const Auth = () => {
     handleSubmit,
     register,
     watch,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm();
   const [form, setForm] = useState(initialState);
@@ -54,7 +55,16 @@ export const Auth = () => {
     if (isSignup) {
       console.log('Signup');
     } else {
-      dispatch(signin(form, navigate));
+      if (values.email === 'test@gmail.com' && values.password === '12345678') {
+        dispatch(signin(form, navigate));
+      } else {
+        setError('email');
+        setError('password', {
+          type: 'server',
+          message:
+            'Sign in failed please enter email:test@gmail.com pass:12345678',
+        });
+      }
     }
   };
 
