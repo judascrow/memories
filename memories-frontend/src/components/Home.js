@@ -37,7 +37,7 @@ const Home = () => {
     if (search.trim()) {
       dispatch(getPosts(page, { search }));
 
-      navigate(`/posts?search=${search}&page=1`);
+      navigate(`/posts?search=${search}`);
     } else {
       navigate('/');
     }

@@ -15,7 +15,7 @@ import {
   Container,
   Button,
 } from '@chakra-ui/react';
-import { BiLike } from 'react-icons/bi';
+import { AiOutlineLike, AiFillLike } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { useParams } from 'react-router-dom';
@@ -47,7 +47,7 @@ const Post = () => {
     if (post?.likes.length > 0) {
       return post?.likes.find(like => like === userId) ? (
         <>
-          <BiLike fontSize="small" />
+          <AiFillLike fontSize="small" />
           &nbsp;
           {post?.likes.length > 2
             ? `You and ${post?.likes.length - 1} others`
@@ -55,7 +55,7 @@ const Post = () => {
         </>
       ) : (
         <>
-          <BiLike fontSize="small" />
+          <AiOutlineLike fontSize="small" />
           &nbsp;{post?.likes.length}{' '}
           {post?.likes.length === 1 ? 'Like' : 'Likes'}
         </>
@@ -64,7 +64,7 @@ const Post = () => {
 
     return (
       <>
-        <BiLike fontSize="small" />
+        <AiOutlineLike fontSize="small" />
         &nbsp;Like
       </>
     );
