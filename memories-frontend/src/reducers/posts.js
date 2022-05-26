@@ -23,7 +23,7 @@ export default (state = { isLoading: true, posts: [] }, action) => {
         ...state,
         posts: action.payload.data,
         currentPage: action.payload.currentPage,
-        numberOfPages: Math.ceil(action.payload.numberOfPages / 8),
+        numberOfPages: action.payload.numberOfPages,
       };
     case FETCH_BY_SEARCH:
     case FETCH_BY_CREATOR:
@@ -31,7 +31,7 @@ export default (state = { isLoading: true, posts: [] }, action) => {
         ...state,
         posts: action.payload.data,
         currentPage: action.payload.currentPage,
-        numberOfPages: Math.ceil(action.payload.numberOfPages / 8),
+        numberOfPages: action.payload.numberOfPages,
       };
     case FETCH_POST:
       return { ...state, post: action.payload.post };
@@ -39,14 +39,14 @@ export default (state = { isLoading: true, posts: [] }, action) => {
       return {
         ...state,
         posts: state.posts.map(post =>
-          post._id === action.payload._id ? action.payload : post
+          post.id === action.payload.id ? action.payload : post
         ),
       };
     case COMMENT:
       return {
         ...state,
         posts: state.posts.map(post => {
-          if (post._id === +action.payload._id) {
+          if (post.id === +action.payload.id) {
             return action.payload;
           }
           return post;
@@ -58,13 +58,13 @@ export default (state = { isLoading: true, posts: [] }, action) => {
       return {
         ...state,
         posts: state.posts.map(post =>
-          post._id === action.payload._id ? action.payload : post
+          post.id === action.payload.id ? action.payload : post
         ),
       };
     case DELETE:
       return {
         ...state,
-        posts: state.posts.filter(post => post._id !== action.payload),
+        posts: state.posts.filter(post => post.id !== action.payload),
       };
     case ERROR_NOT_FOUND:
       return {

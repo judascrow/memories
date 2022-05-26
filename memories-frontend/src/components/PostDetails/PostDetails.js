@@ -41,7 +41,7 @@ const Post = () => {
 
   if (!post) return null;
 
-  const userId = user?.result?._id;
+  const userId = user?.result?.id;
 
   const Likes = () => {
     if (post?.likes.length > 0) {
@@ -107,12 +107,12 @@ const Post = () => {
 
           <Box mb={2}>
             <Text color={colorText} fontSize="sm">
-              Created by: {post.name}
+              Created by: {post.creator}
             </Text>
           </Box>
           <Box mb={3}>
             <Text color={colorText} fontSize="xs">
-              {moment(post.createdAt).fromNow()}
+              {moment(post.created_at).fromNow()}
             </Text>
           </Box>
           <Box mb={3}>
@@ -127,7 +127,7 @@ const Post = () => {
             <>
               <Spacer />
               <Image
-                src={post.selectedFile}
+                src={post.image}
                 objectFit="cover"
                 rounded="md"
                 fallbackSrc="https://via.placeholder.com/450"
@@ -136,7 +136,7 @@ const Post = () => {
           ) : (
             <Container centerContent px={0}>
               <Image
-                src={post.selectedFile}
+                src={post.image}
                 objectFit="cover"
                 rounded="md"
                 fallbackSrc="https://via.placeholder.com/450"

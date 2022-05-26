@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
 	ID        uint      `json:"id" gorm:"primaryKey"`
@@ -8,6 +10,15 @@ type User struct {
 	UpdatedAt time.Time `json:"-" gorm:"primaryKey"`
 	Email     string    `json:"email" gorm:"SIZE:100;UNIQUE;NOT NULL"`
 	Password  string    `json:"-" gorm:"SIZE:255;NOT NULL"`
-	FirstName string    `json:"first_name" gorm:"SIZE:50"`
-	LastName  string    `json:"last_name" gorm:"SIZE:50"`
+	FirstName string    `json:"first_name" gorm:"SIZE:50;NOT NULL"`
+	LastName  string    `json:"last_name" gorm:"SIZE:50;NOT NULL"`
+}
+
+func (u User) Serialize() map[string]interface{} {
+
+	return map[string]interface{}{
+		"id":    u.ID,
+		"name":  u.FirstName + " " + u.LastName,
+		"email": u.Email,
+	}
 }

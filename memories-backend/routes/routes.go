@@ -9,6 +9,8 @@ import (
 
 func SetupRoutes(app *fiber.App) {
 
+	app.Static("/uploads", "./uploads")
+
 	apiV1 := app.Group("/api/v1")
 
 	apiV1.Get("/healthcheck", controllers.Healthcheck)
@@ -19,4 +21,6 @@ func SetupRoutes(app *fiber.App) {
 
 	posts := apiV1.Group("/posts")
 	posts.Post("", middlewares.Protected(), controllers.CreatePost)
+	posts.Get("", controllers.GetAllPosts)
+	posts.Get("/:id", controllers.GetPost)
 }

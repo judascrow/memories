@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import {
   Box,
-  Center,
   Heading,
   Text,
   Stack,
@@ -22,7 +21,7 @@ const Post = ({ post, setCurrentId }) => {
   // const [likes, setLikes] = useState(post?.likes);
   const [likes] = useState(post?.likes);
 
-  const userId = user?.result?._id;
+  const userId = user?.result?.id;
 
   const Likes = () => {
     if (likes.length > 0) {
@@ -56,65 +55,62 @@ const Post = ({ post, setCurrentId }) => {
 
   return (
     <>
-      <Center>
+      {/* <Center> */}
+      <Flex
+        direction={'column'}
+        justify="space-between"
+        // maxW="445px"
+        w="'full"
+        bg={useColorModeValue('white', 'gray.900')}
+        boxShadow="2xl"
+        rounded="md"
+        overflow="hidden"
+      >
         <Flex
-          direction={'column'}
-          justify="space-between"
-          // maxW="445px"
-          w="'full"
-          bg={useColorModeValue('white', 'gray.900')}
-          boxShadow="2xl"
-          rounded="md"
-          overflow="hidden"
+          as="button"
+          w="100%"
+          bg={useColorModeValue('gray.500', 'gray.600')}
+          h={{ base: '250px', md: '180px', lg: '180px' }}
+          position="relative"
+          bgPosition="center"
+          bgSize="cover"
+          bgImage={post.image}
+          borderTopRadius="md"
+          direction="column"
+          onClick={openPost}
         >
-          <Flex
-            as="button"
-            w="100%"
-            bg={useColorModeValue('gray.500', 'gray.600')}
-            h={{ base: '250px', md: '180px', lg: '180px' }}
-            position="relative"
-            bgPosition="center"
-            bgSize="cover"
-            bgImage={post.selectedFile}
-            borderTopRadius="md"
-            direction="column"
-            onClick={openPost}
-          >
-            <Box p={2}>
-              <Text color="white" fontSize="sm" textAlign={'start'}>
-                {post.name}
-              </Text>
-              <Text color="white" fontSize="xs">
-                {moment(post.createdAt).fromNow()}
-              </Text>
-            </Box>
-          </Flex>
-          <Box p={3}>
-            <Box mb={3}>
-              {post.tags.map((tag, index) => (
-                <Tag key={index} size="sm" mr={1}>
-                  {tag}
-                </Tag>
-              ))}
-            </Box>
-            <Stack>
-              <Heading
-                color={useColorModeValue('gray.700', 'white')}
-                fontSize={'lg'}
-                fontFamily={'body'}
-              >
-                {post.title}
-              </Heading>
-              <Text
-                color={useColorModeValue('gray.500', 'white')}
-                fontSize="xs"
-              >
-                {post.message.slice(0, 100)}...
-              </Text>
-            </Stack>
+          <Box p={2}>
+            <Text color="white" fontSize="sm" textAlign={'start'}>
+              {post.creater}
+            </Text>
+            <Text color="white" fontSize="xs">
+              {moment(post.created_at).fromNow()}
+            </Text>
           </Box>
         </Flex>
-      </Center>
+        <Box p={3}>
+          <Box mb={3}>
+            {post.tags.map((tag, index) => (
+              <Tag key={index} size="sm" mr={1}>
+                {tag}
+              </Tag>
+            ))}
+          </Box>
+          <Stack>
+            <Heading
+              color={useColorModeValue('gray.700', 'white')}
+              fontSize={'lg'}
+              fontFamily={'body'}
+            >
+              {post.title}
+            </Heading>
+            <Text color={useColorModeValue('gray.500', 'white')} fontSize="xs">
+              {post.message.slice(0, 100)}...
+            </Text>
+          </Stack>
+        </Box>
+      </Flex>
+      {/* </Center> */}
       <Divider />
       <Flex direction={'row'} p={3} justify={{ base: 'center', md: 'start' }}>
         <Button

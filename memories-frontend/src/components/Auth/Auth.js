@@ -56,7 +56,7 @@ export const Auth = () => {
       console.log('Signup');
     } else {
       if (values.email === 'test@gmail.com' && values.password === '12345678') {
-        dispatch(signin(form, navigate));
+        dispatch(signin(values, navigate));
       } else {
         setError('email');
         setError('password', {
