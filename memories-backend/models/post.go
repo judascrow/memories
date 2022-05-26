@@ -18,14 +18,16 @@ type Post struct {
 	Creator   string    `json:"creator" gorm:"SIZE:200;DEFAULT:NULL"`
 	UserID    uint      `json:"user_id" gorm:"type:int(11);NOT NULL"`
 	User      User      `json:"user"`
+	Likes     []Like    `json:"likes"`
+}
+
+type Like struct {
+	ID     uint `json:"-" gorm:"primaryKey"`
+	PostID uint `json:"-" gorm:"type:int(11);uniqueIndex:idx_like;NOT NULL"`
+	UserID uint `json:"user_id" gorm:"type:int(11);uniqueIndex:idx_like;NOT NULL"`
 }
 
 func (p Post) Serialize(c *fiber.Ctx) map[string]interface{} {
-
-	var likes [3]int
-	likes[0] = 1
-	likes[1] = 2
-	likes[2] = 3
 
 	var comments [3]string
 	comments[0] = "John: test comments"
@@ -45,7 +47,7 @@ func (p Post) Serialize(c *fiber.Ctx) map[string]interface{} {
 		"creator":    p.Creator,
 		"user_id":    p.UserID,
 		"user":       p.User,
-		"likes":      likes,
+		"likes":      p.Likes,
 		"comments":   comments,
 	}
 }

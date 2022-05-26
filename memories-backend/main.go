@@ -19,12 +19,12 @@ func main() {
 	app := fiber.New()
 
 	database.ConnectDB()
-	database.DB.AutoMigrate(&models.User{}, &models.Post{})
+	database.DB.AutoMigrate(&models.User{}, &models.Post{}, &models.Like{})
 
 	app.Use(cors.New())
+	app.Use(favicon.New())
 	app.Use(logger.New())
 	app.Use(recover.New())
-	app.Use(favicon.New())
 
 	routes.SetupRoutes(app)
 

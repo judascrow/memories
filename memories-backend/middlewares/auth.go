@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v2"
+	jwtv4 "github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -30,4 +31,16 @@ func HashPassword(password string) (string, error) {
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
+}
+
+func ValidToken(t *jwtv4.Token, userID uint) bool {
+
+	claims := t.Claims.(jwtv4.MapClaims)
+	uid := int(claims["userID"].(float64))
+
+	if uid != int(userID) {
+		return false
+	}
+
+	return true
 }
