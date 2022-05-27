@@ -14,3 +14,4 @@ export const AUTH = 'AUTH';
 export const LOGOUT = 'LOGOUT';
 
 export const ERROR_NOT_FOUND = 'ERROR_NOT_FOUND';
+export const ERROR_AUTH = 'ERROR_AUTH';
