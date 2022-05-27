@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import moment from 'moment';
 import {
   Box,
   Heading,
@@ -11,27 +12,41 @@ import {
   Divider,
 } from '@chakra-ui/react';
 import { AiOutlineLike, AiFillLike } from 'react-icons/ai';
-import moment from 'moment';
+import { FiMoreHorizontal } from 'react-icons/fi';
+import { MdDeleteForever } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+
+import { likePost, deletePost } from '../../actions/posts';
 
 const Post = ({ post, setCurrentId }) => {
   const user = JSON.parse(localStorage.getItem('profile'));
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const [likes, setLikes] = useState(post?.likes);
-  const [likes] = useState(post?.likes);
+  const [likes, setLikes] = useState(post?.likes);
 
   const userId = user?.result?.id;
+  const hasLikedPost = post?.likes?.find(like => like === userId);
+
+  const handleLike = async () => {
+    dispatch(likePost(post.id));
+
+    if (hasLikedPost) {
+      setLikes(post?.likes?.filter(like => like !== userId));
+    } else {
+      setLikes([...post.likes, userId]);
+    }
+  };
 
   const Likes = () => {
-    if (likes.length > 0) {
+    if (likes && likes.length > 0) {
       return likes.find(like => like === userId) ? (
         <>
           <AiFillLike fontSize="small" />
           &nbsp;
           {likes.length > 2
             ? `You and ${likes.length - 1} others`
-            : `${likes.length} like${likes.length > 1 ? 's' : ''}`}
+            : `${likes.length} Like${likes.length > 1 ? 's' : ''}`}
         </>
       ) : (
         <>
@@ -78,23 +93,68 @@ const Post = ({ post, setCurrentId }) => {
           borderTopRadius="md"
           direction="column"
           onClick={openPost}
+          // style={{ filter: 'brightness(0.6)' }}
         >
-          <Box p={2}>
-            <Text color="white" fontSize="sm" textAlign={'start'}>
-              {post.creater}
-            </Text>
-            <Text color="white" fontSize="xs">
+          <Flex
+            flexDirection={'column'}
+            w="100%"
+            p={2}
+            justifyContent="flex-start"
+          >
+            <Flex justifyContent={'space-between'}>
+              <Text color="white" fontSize="sm" textAlign={'start'}>
+                {post.creator}
+              </Text>
+              {user?.result?.id === post?.user_id && (
+                <Box name="edit">
+                  <Box
+                    onClick={e => {
+                      e.stopPropagation();
+                      setCurrentId(post.id);
+                      window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth',
+                      });
+                    }}
+                    px={1}
+                    borderRadius="2px"
+                    bgColor="whiteAlpha.700"
+                    color="#4b4f56"
+                    _hover={{ bg: '#ebedf0' }}
+                    _active={{
+                      bg: '#dddfe2',
+                      transform: 'scale(0.98)',
+                      borderColor: '#bec3c9',
+                    }}
+                    _focus={{
+                      boxShadow:
+                        '0 0 1px 2px rgba(88, 144, 255, .75), 0 1px 1px rgba(0, 0, 0, .15)',
+                    }}
+                  >
+                    <FiMoreHorizontal />
+                  </Box>
+                </Box>
+              )}
+            </Flex>
+
+            <Text color="white" fontSize="xs" align={'start'}>
               {moment(post.created_at).fromNow()}
             </Text>
-          </Box>
+          </Flex>
         </Flex>
         <Box p={3}>
           <Box mb={3}>
-            {post.tags.map((tag, index) => (
-              <Tag key={index} size="sm" mr={1}>
-                {tag}
-              </Tag>
-            ))}
+            {post.tags?.length > 0 ? (
+              post.tags.map((tag, index) => (
+                <Tag key={index} size="sm" mr={1}>
+                  {tag}
+                </Tag>
+              ))
+            ) : (
+              <Text fontSize="xs" mb={5} color="gray.500">
+                no tag
+              </Text>
+            )}
           </Box>
           <Stack>
             <Heading
@@ -112,12 +172,35 @@ const Post = ({ post, setCurrentId }) => {
       </Flex>
       {/* </Center> */}
       <Divider />
-      <Flex direction={'row'} p={3} justify={{ base: 'center', md: 'start' }}>
+      <Flex
+        direction={'row'}
+        p={3}
+        justify={{ base: 'center', md: 'start' }}
+        justifyContent="space-between"
+      >
         <Button
           size="xs"
+          w={{ base: '100%', md: '40%' }}
           color={useColorModeValue('blue.600', 'white')}
           leftIcon={<Likes />}
+          disabled={!user?.result}
+          onClick={handleLike}
+          mr={1}
         />
+        {user?.result?.id === post?.user_id && (
+          <Button
+            size="xs"
+            w={{ base: '100%', md: '40%' }}
+            leftIcon={<MdDeleteForever />}
+            color="red.500"
+            onClick={() => {
+              dispatch(deletePost(post.id));
+            }}
+            ml={1}
+          >
+            Delete
+          </Button>
+        )}
       </Flex>
     </>
   );

@@ -24,6 +24,8 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const textColor = useColorModeValue('gray.600', 'white');
+
   const logout = () => {
     dispatch({ type: actionType.LOGOUT });
 
@@ -77,7 +79,7 @@ const Navbar = () => {
       {user?.result ? (
         <Center>
           <Avatar size="sm" bg="purple.500" mr={5} />
-          <Heading fontSize="sm" color="gray.600" mr={10}>
+          <Heading fontSize="sm" color={textColor} mr={10}>
             {user?.result.name}
           </Heading>
           <Spacer />

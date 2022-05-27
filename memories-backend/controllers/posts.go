@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"math"
 	"memories-backend/database"
 	"memories-backend/middlewares"
@@ -34,19 +35,22 @@ func CreatePost(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "upload file validate error",
+			"error":   err.Error(),
 		})
 	}
 
-	if image.Size > 3000000 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "ขนาดไฟล์ต้องไม่เกิน 3 MB",
-		})
-	}
+	if image != nil {
+		if image.Size > 3000000 {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"message": "ขนาดไฟล์ต้องไม่เกิน 3 MB",
+			})
+		}
 
-	if image.Header["Content-Type"][0] != "image/jpeg" && image.Header["Content-Type"][0] != "image/png" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "เอกสารที่อัพโหลดต้องเป็นไฟล์ชนิด jpg หรือ png เท่านั้น",
-		})
+		if image.Header["Content-Type"][0] != "image/jpeg" && image.Header["Content-Type"][0] != "image/png" {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"message": "เอกสารที่อัพโหลดต้องเป็นไฟล์ชนิด jpg หรือ png เท่านั้น",
+			})
+		}
 	}
 
 	db := database.DB
@@ -118,7 +122,7 @@ func GetAllPosts(c *fiber.Ctx) error {
 	var posts []models.Post
 
 	quertCount := db.Model(&models.Post{})
-	query := db.Preload("User").Preload("Likes").Offset(offset).Limit(pageSize)
+	query := db.Preload("User").Preload("Likes").Order("id DESC").Offset(offset).Limit(pageSize)
 	if search != "" {
 		quertCount = quertCount.Where("title Like ?", "%"+search+"%").Or("message Like ?", "%"+search+"%").Or("tags Like ?", "%"+search+"%").Or("creator Like ?", "%"+search+"%")
 		query = query.Where("title Like ?", "%"+search+"%").Or("message Like ?", "%"+search+"%").Or("tags Like ?", "%"+search+"%").Or("creator Like ?", "%"+search+"%")
@@ -223,6 +227,7 @@ func UpdatePost(c *fiber.Ctx) error {
 		Tags:    postReq.Tags,
 		Image:   postImage,
 	}
+	fmt.Println(postUpdate)
 
 	db.Model(&post).Updates(postUpdate)
 
@@ -281,5 +286,7 @@ func LikePost(c *fiber.Ctx) error {
 		db.Where("post_id = ?", post.ID).Where("user_id = ?", userID).Delete(&like)
 	}
 
-	return c.JSON(fiber.Map{"message": "Liked post successfully", "data": nil})
+	db.Preload("User").Preload("Likes").First(&post, id)
+
+	return c.JSON(fiber.Map{"message": "Liked post successfully", "data": post.Serialize(c)})
 }

@@ -28,6 +28,19 @@ type Like struct {
 }
 
 func (p Post) Serialize(c *fiber.Ctx) map[string]interface{} {
+	var tags []string
+	if p.Tags != "" {
+		for _, v := range strings.Split(p.Tags, ",") {
+			if strings.TrimSpace(v) != "" {
+				tags = append(tags, strings.TrimSpace(v))
+			}
+		}
+	}
+
+	likes := make([]int, 0)
+	for _, v := range p.Likes {
+		likes = append(likes, int(v.UserID))
+	}
 
 	var comments [3]string
 	comments[0] = "John: test comments"
@@ -43,11 +56,11 @@ func (p Post) Serialize(c *fiber.Ctx) map[string]interface{} {
 		"title":      p.Title,
 		"message":    p.Message,
 		"image":      c.BaseURL() + strings.Replace(p.Image, "\\", "/", replaceAllFlag),
-		"tags":       strings.Split(p.Tags, ","),
+		"tags":       tags,
 		"creator":    p.Creator,
 		"user_id":    p.UserID,
 		"user":       p.User,
-		"likes":      p.Likes,
+		"likes":      likes,
 		"comments":   comments,
 	}
 }
