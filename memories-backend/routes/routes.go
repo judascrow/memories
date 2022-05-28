@@ -26,4 +26,6 @@ func SetupRoutes(app *fiber.App) {
 	posts.Put("/:id", middlewares.Protected(), controllers.UpdatePost)
 	posts.Delete("/:id", middlewares.Protected(), controllers.DeletePost)
 	posts.Patch("/:id/like", middlewares.Protected(), controllers.LikePost)
+	posts.Patch("/:id/comment", middlewares.Protected(), controllers.CommentPost)
+	posts.Delete("/:id/comment/:cid", middlewares.Protected(), controllers.DeleteComment)
 }

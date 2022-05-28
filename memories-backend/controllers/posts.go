@@ -14,12 +14,17 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	jwtv4 "github.com/golang-jwt/jwt/v4"
+	"gorm.io/gorm"
 )
 
 type postRequest struct {
 	Title   string `json:"title" form:"title"`
 	Message string `json:"message" form:"message"`
 	Tags    string `json:"tags"  form:"tags"`
+}
+
+type commentRequest struct {
+	CommentText string `json:"comment_text" form:"comment_text"`
 }
 
 func CreatePost(c *fiber.Ctx) error {
@@ -33,10 +38,10 @@ func CreatePost(c *fiber.Ctx) error {
 
 	image, err := c.FormFile("image")
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "upload file validate error",
-			"error":   err.Error(),
-		})
+		// return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		// 	"message": "upload file validate error",
+		// 	"error":   err.Error(),
+		// })
 	}
 
 	if image != nil {
@@ -88,8 +93,8 @@ func CreatePost(c *fiber.Ctx) error {
 		Message: postReq.Message,
 		Tags:    postReq.Tags,
 		Image:   postImage,
-		Creator: claims["creator"].(string),
-		UserID:  uint(claims["userID"].(float64)),
+		// Creator: claims["creator"].(string),
+		UserID: uint(claims["userID"].(float64)),
 	}
 
 	err = db.Create(&post).Error
@@ -103,7 +108,7 @@ func CreatePost(c *fiber.Ctx) error {
 	postRes := models.Post{}
 	db.Preload("User").Find(&postRes, post.ID)
 
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Post successfully created", "data": postRes.Serialize(c)})
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Created post successfully ", "data": postRes.Serialize(c)})
 }
 
 func GetAllPosts(c *fiber.Ctx) error {
@@ -122,7 +127,9 @@ func GetAllPosts(c *fiber.Ctx) error {
 	var posts []models.Post
 
 	quertCount := db.Model(&models.Post{})
-	query := db.Preload("User").Preload("Likes").Order("id DESC").Offset(offset).Limit(pageSize)
+	query := db.Preload("User").Preload("Likes").Preload("Comments", func(db *gorm.DB) *gorm.DB {
+		return db.Order("comments.id DESC")
+	}).Order("id DESC").Offset(offset).Limit(pageSize)
 	if search != "" {
 		quertCount = quertCount.Where("title Like ?", "%"+search+"%").Or("message Like ?", "%"+search+"%").Or("tags Like ?", "%"+search+"%").Or("creator Like ?", "%"+search+"%")
 		query = query.Where("title Like ?", "%"+search+"%").Or("message Like ?", "%"+search+"%").Or("tags Like ?", "%"+search+"%").Or("creator Like ?", "%"+search+"%")
@@ -153,7 +160,9 @@ func GetPost(c *fiber.Ctx) error {
 	id := c.Params("id")
 	db := database.DB
 	var post models.Post
-	db.Preload("User").Preload("Likes").Find(&post, id)
+	db.Preload("User").Preload("Likes").Preload("Comments", func(db *gorm.DB) *gorm.DB {
+		return db.Order("comments.id DESC")
+	}).Find(&post, id)
 	if post.Title == "" {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": "error", "message": "No post found with ID", "data": nil})
 
@@ -231,7 +240,7 @@ func UpdatePost(c *fiber.Ctx) error {
 
 	db.Model(&post).Updates(postUpdate)
 
-	return c.JSON(fiber.Map{"message": "Post successfully updated", "data": post.Serialize(c)})
+	return c.JSON(fiber.Map{"message": "Updated post successfully", "data": post.Serialize(c)})
 }
 
 func DeletePost(c *fiber.Ctx) error {
@@ -239,6 +248,8 @@ func DeletePost(c *fiber.Ctx) error {
 	db := database.DB
 
 	var post models.Post
+	var comment models.Comment
+	var like models.Like
 	db.First(&post, id)
 	if post.Title == "" {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "No post found with ID", "data": nil})
@@ -249,9 +260,13 @@ func DeletePost(c *fiber.Ctx) error {
 	if !middlewares.ValidToken(token, post.UserID) {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Invalid token id", "data": nil})
 	}
-
-	db.Delete(&post)
-	return c.JSON(fiber.Map{"status": "success", "message": "Post successfully deleted", "data": nil})
+	db.Where("post_id = ?", id).Delete(&comment)
+	db.Where("post_id = ?", id).Delete(&like)
+	err := db.Delete(&post).Error
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Cannot delete post", "data": nil})
+	}
+	return c.JSON(fiber.Map{"status": "success", "message": "Deleted post successfully", "data": nil})
 }
 
 func LikePost(c *fiber.Ctx) error {
@@ -286,7 +301,80 @@ func LikePost(c *fiber.Ctx) error {
 		db.Where("post_id = ?", post.ID).Where("user_id = ?", userID).Delete(&like)
 	}
 
-	db.Preload("User").Preload("Likes").First(&post, id)
+	db.Preload("User").Preload("Likes").Preload("Comments", func(db *gorm.DB) *gorm.DB {
+		return db.Order("comments.id DESC")
+	}).First(&post, id)
 
 	return c.JSON(fiber.Map{"message": "Liked post successfully", "data": post.Serialize(c)})
+}
+
+func CommentPost(c *fiber.Ctx) error {
+	id := c.Params("id")
+	commentReq := new(commentRequest)
+	if err := c.BodyParser(commentReq); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Couldn't create Comment", "data": nil})
+	}
+
+	token := c.Locals("user").(*jwtv4.Token)
+	claims := token.Claims.(jwtv4.MapClaims)
+	if claims["userID"] == "" || claims["creator"] == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "token is expired",
+		})
+	}
+	userID := uint(claims["userID"].(float64))
+	creator := claims["creator"].(string)
+
+	db := database.DB
+	var post models.Post
+	db.First(&post, id)
+	if post.Title == "" {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "No post found with ID", "data": nil})
+	}
+
+	comment := models.Comment{
+		PostID:      post.ID,
+		UserID:      userID,
+		CommentText: creator + ": " + commentReq.CommentText,
+	}
+	err := db.Create(&comment).Error
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Comment failed",
+			"error":   err.Error(),
+		})
+	}
+
+	db.Preload("User").Preload("Likes").Preload("Comments", func(db *gorm.DB) *gorm.DB {
+		return db.Order("comments.id DESC")
+	}).First(&post, id)
+
+	return c.JSON(fiber.Map{"message": "Comment post successfully", "data": post.Serialize(c)})
+}
+
+func DeleteComment(c *fiber.Ctx) error {
+	id := c.Params("id")
+	cid := c.Params("cid")
+	db := database.DB
+
+	var comment models.Comment
+	db.Where("post_id = ?", id).First(&comment, cid)
+	if comment.CommentText == "" {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "No comment found with ID", "data": nil})
+
+	}
+
+	token := c.Locals("user").(*jwtv4.Token)
+	if !middlewares.ValidToken(token, comment.UserID) {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": "Invalid token id", "data": nil})
+	}
+
+	db.Delete(&comment)
+
+	var post models.Post
+	db.Preload("User").Preload("Likes").Preload("Comments", func(db *gorm.DB) *gorm.DB {
+		return db.Order("comments.id DESC")
+	}).First(&post, id)
+
+	return c.JSON(fiber.Map{"message": "Deleted comment successfully ", "data": post.Serialize(c)})
 }

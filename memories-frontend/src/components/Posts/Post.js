@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import moment from 'moment';
 import {
   Box,
@@ -10,6 +10,8 @@ import {
   Flex,
   Button,
   Divider,
+  useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import { AiOutlineLike, AiFillLike } from 'react-icons/ai';
 import { FiMoreHorizontal } from 'react-icons/fi';
@@ -18,15 +20,25 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { likePost, deletePost } from '../../actions/posts';
+import Alert from '../Alert';
 
 const Post = ({ post, setCurrentId }) => {
   const user = JSON.parse(localStorage.getItem('profile'));
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const toast = useToast();
+  const cancelRef = useRef();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [likes, setLikes] = useState(post?.likes);
+  const [PID, setPID] = useState(null);
 
   const userId = user?.result?.id;
   const hasLikedPost = post?.likes?.find(like => like === userId);
+
+  const handleSetPID = async postID => {
+    await setPID(postID);
+    onOpen();
+  };
 
   const handleLike = async () => {
     dispatch(likePost(post.id));
@@ -89,7 +101,11 @@ const Post = ({ post, setCurrentId }) => {
           position="relative"
           bgPosition="center"
           bgSize="cover"
-          bgImage={post.image}
+          bgImage={
+            post.image.includes('/uploads/')
+              ? post.image
+              : 'https://lpm.ulm.ac.id/image/desain/empty.jpg'
+          }
           borderTopRadius="md"
           direction="column"
           onClick={openPost}
@@ -103,7 +119,7 @@ const Post = ({ post, setCurrentId }) => {
           >
             <Flex justifyContent={'space-between'}>
               <Text color="white" fontSize="sm" textAlign={'start'}>
-                {post.creator}
+                {post.user.first_name + ' ' + post.user.last_name}
               </Text>
               {user?.result?.id === post?.user_id && (
                 <Box name="edit">
@@ -180,7 +196,7 @@ const Post = ({ post, setCurrentId }) => {
       >
         <Button
           size="xs"
-          w={{ base: '100%', md: '40%' }}
+          w={{ base: '100%', md: 'auto' }}
           color={useColorModeValue('blue.600', 'white')}
           leftIcon={<Likes />}
           disabled={!user?.result}
@@ -190,11 +206,11 @@ const Post = ({ post, setCurrentId }) => {
         {user?.result?.id === post?.user_id && (
           <Button
             size="xs"
-            w={{ base: '100%', md: '40%' }}
+            w={{ base: '100%', md: 'auto' }}
             leftIcon={<MdDeleteForever />}
             color="red.500"
             onClick={() => {
-              dispatch(deletePost(post.id));
+              handleSetPID(post.id);
             }}
             ml={1}
           >
@@ -202,6 +218,15 @@ const Post = ({ post, setCurrentId }) => {
           </Button>
         )}
       </Flex>
+      <Alert
+        isOpen={isOpen}
+        cancelRef={cancelRef}
+        onClose={onClose}
+        postID={PID}
+        handleFuc={() => {
+          dispatch(deletePost(post.id, toast));
+        }}
+      />
     </>
   );
 };

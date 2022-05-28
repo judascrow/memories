@@ -7,7 +7,7 @@ import Auth from './components/Auth/Auth';
 import PostDetails from './components/PostDetails/PostDetails';
 
 function App() {
-  const user = JSON.parse(localStorage.getItem('profile'));
+  // const user = JSON.parse(localStorage.getItem('profile'));
 
   return (
     <ChakraProvider theme={theme}>
@@ -18,13 +18,14 @@ function App() {
           <Route path="/posts" index element={<Home />} />
           {/* <Route path="/posts/search" index element={<Home />} /> */}
           <Route path="/posts/:id" index element={<PostDetails />} />
-          <Route
+          <Route path="/auth" index element={<Auth />} />
+          {/* <Route
             path="/auth"
             index
             element={
               !user || user === null ? <Auth /> : <Navigate to="/posts" />
             }
-          />
+          /> */}
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

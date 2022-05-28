@@ -19,7 +19,7 @@ func main() {
 	app := fiber.New()
 
 	database.ConnectDB()
-	database.DB.AutoMigrate(&models.User{}, &models.Post{}, &models.Like{})
+	database.DB.AutoMigrate(&models.User{}, &models.Post{}, &models.Like{}, &models.Comment{})
 
 	app.Use(cors.New())
 	app.Use(favicon.New())

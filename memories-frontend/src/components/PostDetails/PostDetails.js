@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   useColorModeValue,
@@ -20,10 +20,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { useParams } from 'react-router-dom';
 
-import { getPost } from '../../actions/posts';
+import { getPost, likePost } from '../../actions/posts';
 import CommentSection from './CommentSection';
 
-const Post = () => {
+const PostDetails = () => {
   const bg = useColorModeValue('white', 'gray.700');
   const colorText = useColorModeValue('gray.600', 'white');
   const colorTag = useColorModeValue('gray.500', 'white');
@@ -31,8 +31,19 @@ const Post = () => {
   const [isLargerThan1280] = useMediaQuery('(min-width: 960px)');
   const user = JSON.parse(localStorage.getItem('profile'));
   const { post, isLoading } = useSelector(state => state.posts);
+
   const dispatch = useDispatch();
   const { id } = useParams();
+
+  const [likes, setLikes] = useState(post?.likes);
+
+  const userId = user?.result?.id;
+  const hasLikedPost = likes?.find(like => like === userId);
+
+  useEffect(() => {
+    setLikes(post?.likes);
+    // eslint-disable-next-line
+  }, [post]);
 
   useEffect(() => {
     dispatch(getPost(id));
@@ -41,23 +52,30 @@ const Post = () => {
 
   if (!post) return null;
 
-  const userId = user?.result?.id;
+  const handleLike = async () => {
+    dispatch(likePost(post.id));
+
+    if (hasLikedPost) {
+      setLikes(likes?.filter(like => like !== userId));
+    } else {
+      setLikes([...likes, userId]);
+    }
+  };
 
   const Likes = () => {
-    if (post?.likes && post?.likes.length > 0) {
-      return post?.likes.find(like => like === userId) ? (
+    if (likes && likes.length > 0) {
+      return likes.find(like => like === userId) ? (
         <>
           <AiFillLike fontSize="small" />
           &nbsp;
-          {post?.likes.length > 2
-            ? `You and ${post?.likes?.length - 1} others`
-            : `${post?.likes.length} like${post?.likes.length > 1 ? 's' : ''}`}
+          {likes.length > 2
+            ? `You and ${likes.length - 1} others`
+            : `${likes.length} Like${likes.length > 1 ? 's' : ''}`}
         </>
       ) : (
         <>
           <AiOutlineLike fontSize="small" />
-          &nbsp;{post?.likes.length}{' '}
-          {post?.likes.length === 1 ? 'Like' : 'Likes'}
+          &nbsp;{likes.length} {likes.length === 1 ? 'Like' : 'Likes'}
         </>
       );
     }
@@ -107,7 +125,7 @@ const Post = () => {
 
           <Box mb={2}>
             <Text color={colorText} fontSize="sm">
-              Created by: {post.creator}
+              Created by: {post.user.first_name + ' ' + post.user.last_name}
             </Text>
           </Box>
           <Box mb={3}>
@@ -116,7 +134,13 @@ const Post = () => {
             </Text>
           </Box>
           <Box mb={3}>
-            <Button size="xs" color={colorLike} leftIcon={<Likes />} />{' '}
+            <Button
+              size="xs"
+              color={colorLike}
+              leftIcon={<Likes />}
+              disabled={!user?.result}
+              onClick={handleLike}
+            />
           </Box>
           <Divider mb={5} />
           <CommentSection post={post} />
@@ -130,7 +154,7 @@ const Post = () => {
                 src={post.image}
                 objectFit="cover"
                 rounded="md"
-                fallbackSrc="https://via.placeholder.com/450"
+                fallbackSrc="https://lpm.ulm.ac.id/image/desain/empty.jpg"
               />
             </>
           ) : (
@@ -139,7 +163,7 @@ const Post = () => {
                 src={post.image}
                 objectFit="cover"
                 rounded="md"
-                fallbackSrc="https://via.placeholder.com/450"
+                fallbackSrc="https://lpm.ulm.ac.id/image/desain/empty.jpg"
               />
             </Container>
           )}
@@ -197,4 +221,4 @@ const Post = () => {
   );
 };
 
-export default Post;
+export default PostDetails;

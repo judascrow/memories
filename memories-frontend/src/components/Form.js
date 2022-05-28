@@ -9,6 +9,7 @@ import {
   FormControl,
   FormErrorMessage,
   Center,
+  useToast,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -26,6 +27,8 @@ const Form = ({ currentId, setCurrentId }) => {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm();
+
+  const toast = useToast();
 
   const colorText = useColorModeValue('gray.500', 'gray.300');
   const user = JSON.parse(localStorage.getItem('profile'));
@@ -48,7 +51,6 @@ const Form = ({ currentId, setCurrentId }) => {
       setValue('title', post.title);
       setValue('message', post.message);
       setValue('tags', post.tags);
-      setValue('image', 'C:UsersCOJDesktop\test.png');
     }
     // eslint-disable-next-line
   }, [post]);
@@ -76,9 +78,9 @@ const Form = ({ currentId, setCurrentId }) => {
     }
 
     if (currentId === 0) {
-      dispatch(createPost(fmData, navigate));
+      dispatch(createPost(fmData, navigate, toast));
     } else {
-      dispatch(updatePost(currentId, fmData));
+      dispatch(updatePost(currentId, fmData, toast));
     }
 
     clear();
@@ -121,7 +123,9 @@ const Form = ({ currentId, setCurrentId }) => {
             name="tags"
             size="sm"
             placeholder="Tags (coma separated)"
-            {...register('tags')}
+            {...register('tags', {
+              required: 'Tags is required',
+            })}
           />
           <FormErrorMessage>
             {errors.tags && errors.tags.message}
@@ -129,7 +133,15 @@ const Form = ({ currentId, setCurrentId }) => {
         </FormControl>
         {post?.image ? (
           <Center mb={2}>
-            <Image rounded="md" objectFit="cover" src={post?.image}></Image>
+            <Image
+              rounded="md"
+              objectFit="cover"
+              src={
+                post?.image.includes('/uploads/')
+                  ? post.image
+                  : 'https://lpm.ulm.ac.id/image/desain/empty.jpg'
+              }
+            ></Image>
           </Center>
         ) : (
           ''

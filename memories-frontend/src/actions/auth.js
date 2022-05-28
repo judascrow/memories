@@ -7,13 +7,22 @@ export const signin = (formData, navigate, toast) => async dispatch => {
 
     dispatch({ type: AUTH, data });
 
+    toast({
+      title: data.message,
+      status: 'success',
+      position: 'top',
+      duration: 3000,
+      isClosable: true,
+    });
+
     navigate('/');
   } catch (error) {
     console.log(error);
     toast({
-      title: error.response.data?.message,
+      title: error.response.data ? error.response.data.message : error.message,
       status: 'error',
-      duration: 5000,
+      position: 'top',
+      duration: 3000,
       isClosable: true,
     });
   }
@@ -25,13 +34,22 @@ export const signup = (formData, navigate, toast) => async dispatch => {
 
     dispatch({ type: AUTH, data });
 
+    toast({
+      title: data.message,
+      status: 'success',
+      position: 'top',
+      duration: 3000,
+      isClosable: true,
+    });
+
     navigate('/');
   } catch (error) {
     console.log(error);
     toast({
-      title: error.response.data?.message,
+      title: error.response.data ? error.response.data.message : error.message,
       status: 'error',
-      duration: 5000,
+      position: 'top',
+      duration: 3000,
       isClosable: true,
     });
   }

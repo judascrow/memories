@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -35,6 +35,14 @@ export const Auth = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('profile'));
+    if (user) {
+      navigate('/posts');
+    }
+    // eslint-disable-next-line
+  }, []);
 
   const switchMode = () => {
     setIsSignup(prevIsSignup => !prevIsSignup);
@@ -125,11 +133,11 @@ export const Auth = () => {
                         })}
                       />
 
-                      <FormControl isInvalid={errors.firstName}>
-                        <FormLabel htmlFor="firstName">First Name</FormLabel>
+                      <FormControl isInvalid={errors.first_name}>
+                        <FormLabel htmlFor="first_name">First Name</FormLabel>
                         <Input
-                          name="firstName"
-                          {...register('firstName', {
+                          name="first_name"
+                          {...register('first_name', {
                             required: 'First Name is required',
                             minLength: {
                               value: 3,
@@ -138,14 +146,14 @@ export const Auth = () => {
                           })}
                         />
                         <FormErrorMessage>
-                          {errors.firstName && errors.firstName.message}
+                          {errors.first_name && errors.first_name.message}
                         </FormErrorMessage>
                       </FormControl>
-                      <FormControl isInvalid={errors.lastName}>
-                        <FormLabel htmlFor="lastName">Last Name</FormLabel>
+                      <FormControl isInvalid={errors.last_name}>
+                        <FormLabel htmlFor="last_name">Last Name</FormLabel>
                         <Input
-                          name="lastName"
-                          {...register('lastName', {
+                          name="last_name"
+                          {...register('last_name', {
                             required: 'Last Name is required',
                             minLength: {
                               value: 3,
@@ -154,7 +162,7 @@ export const Auth = () => {
                           })}
                         />
                         <FormErrorMessage>
-                          {errors.lastName && errors.lastName.message}
+                          {errors.last_name && errors.last_name.message}
                         </FormErrorMessage>
                       </FormControl>
                     </>

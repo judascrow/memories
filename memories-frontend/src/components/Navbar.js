@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-// import decode from 'jwt-decode';
+import decode from 'jwt-decode';
 import { FaCameraRetro, FaLock } from 'react-icons/fa';
 
 import * as actionType from '../constants/actionTypes';
@@ -35,13 +35,13 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    // const token = user?.token;
+    const token = user?.token;
 
-    // if (token) {
-    //   const decodedToken = decode(token);
+    if (token) {
+      const decodedToken = decode(token);
 
-    //   if (decodedToken.exp * 1000 < new Date().getTime()) logout();
-    // }
+      if (decodedToken.exp * 1000 < new Date().getTime()) logout();
+    }
 
     setUser(JSON.parse(localStorage.getItem('profile')));
     // eslint-disable-next-line

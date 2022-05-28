@@ -9,6 +9,7 @@ import {
   LIKE,
   COMMENT,
   ERROR_NOT_FOUND,
+  DELETE_COMMENT,
 } from '../constants/actionTypes';
 
 // eslint-disable-next-line
@@ -65,6 +66,13 @@ export default (state = { isLoading: true, posts: [] }, action) => {
       return {
         ...state,
         posts: state.posts.filter(post => post.id !== action.payload),
+      };
+    case DELETE_COMMENT:
+      return {
+        ...state,
+        posts: state.posts.filter(post =>
+          post.comments.filter(comment => comment.id !== action.payload)
+        ),
       };
     case ERROR_NOT_FOUND:
       return {

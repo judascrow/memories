@@ -63,7 +63,20 @@ func Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Couldn't create user", "data": nil})
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Register successfully", "data": req})
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	claims := token.Claims.(jwt.MapClaims)
+	claims["email"] = user.Email
+	claims["creator"] = user.FirstName + " " + user.LastName
+	claims["userID"] = user.ID
+	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+
+	t, err := token.SignedString([]byte(config.Config("SECRET")))
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": err.Error(), "data": nil})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Register successfully", "token": t, "result": user.Serialize()})
 }
 
 func Login(c *fiber.Ctx) error {
