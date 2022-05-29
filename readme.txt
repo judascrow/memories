@@ -16,3 +16,16 @@ Memories frontend
     2. เปิด cmd หรือ gitbash ขึ้นมาแล้วรันคำสั่ง npm install
     3. รันคำสั่ง npm start
     4. เมื่อรันผ่านแล้วสามารถเข้าระบบได้ที่ http://localhost:3000
+
+
+
+*** .env config example
+SERVER_PORT=8000
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=root
+DB_NAME=db_memories
+
+SECRET=memories
