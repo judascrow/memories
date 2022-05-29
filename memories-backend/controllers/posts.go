@@ -131,8 +131,8 @@ func GetAllPosts(c *fiber.Ctx) error {
 		return db.Order("comments.id DESC")
 	}).Order("id DESC").Offset(offset).Limit(pageSize)
 	if search != "" {
-		quertCount = quertCount.Where("title Like ?", "%"+search+"%").Or("message Like ?", "%"+search+"%").Or("tags Like ?", "%"+search+"%").Or("creator Like ?", "%"+search+"%")
-		query = query.Where("title Like ?", "%"+search+"%").Or("message Like ?", "%"+search+"%").Or("tags Like ?", "%"+search+"%").Or("creator Like ?", "%"+search+"%")
+		quertCount = quertCount.Where("title Like ?", "%"+search+"%").Or("message Like ?", "%"+search+"%").Or("tags Like ?", "%"+search+"%")
+		query = query.Where("title Like ?", "%"+search+"%").Or("message Like ?", "%"+search+"%").Or("tags Like ?", "%"+search+"%")
 	}
 
 	err := quertCount.Count(&count).Error
